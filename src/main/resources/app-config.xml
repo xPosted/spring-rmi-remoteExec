@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <bean class="com.jubaka.remoting.model.impl.RemoteExecutorImpl" id="remoteExecutor"></bean>
+    <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+        <property name="serviceName" value="RemoteExecutor"></property>
+        <property name="service" ref="remoteExecutor"></property>
+        <property name="serviceInterface" value="java.util.concurrent.ExecutorService"></property>
+        <property name="registryPort" value="1199"></property>
+    </bean>
+</beans>
