@@ -8,11 +8,20 @@
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <bean class="com.jubaka.remoting.model.impl.RemoteExecutorImpl" id="remoteExecutor"></bean>
+    <bean class="com.jubaka.remoting.model.impl.RemoteExecutorImpl"    id="remoteExecutor"></bean>
+    <bean class="com.jubaka.remoting.model.impl.RemoteClassLoaderImpl" id="classLoader"></bean>
     <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
         <property name="serviceName" value="RemoteExecutor"></property>
         <property name="service" ref="remoteExecutor"></property>
         <property name="serviceInterface" value="java.util.concurrent.ExecutorService"></property>
         <property name="registryPort" value="1199"></property>
     </bean>
+
+    <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+        <property name="serviceName" value="RemoteClassLoader"></property>
+        <property name="service" ref="classLoader"></property>
+        <property name="serviceInterface" value="com.jubaka.remoting.model.RemoteClassLoader"></property>
+        <property name="registryPort" value="1199"></property>
+    </bean>
+
 </beans>

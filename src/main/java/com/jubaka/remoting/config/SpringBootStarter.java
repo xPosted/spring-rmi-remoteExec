@@ -12,8 +12,21 @@ import org.springframework.context.annotation.ImportResource;
 @ImportResource("classpath:app-config.xml")
 public class SpringBootStarter {
 
+
+
+    public static String classPath = "/home/jubaka/dev/spring-rmi/classPath/";
+
     public static void main(String[] args) {
         System.setProperty("java.rmi.server.useCodebaseOnly","false");
         SpringApplication.run(SpringBootStarter.class,args);
     }
+
+    public static String getClassPath() {
+        return classPath;
+    }
+
+    public static void setClassPath(String classPath) {
+        SpringBootStarter.classPath = classPath;
+    }
+
 }
