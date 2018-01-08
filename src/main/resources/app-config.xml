@@ -21,7 +21,7 @@
         <property name="serviceName" value="RemoteClassLoader"></property>
         <property name="service" ref="classLoader"></property>
         <property name="serviceInterface" value="com.jubaka.remoting.model.RemoteClassLoader"></property>
-        <property name="registryPort" value="1199"></property>
+        <property name="registryPort" value="1099"></property>
     </bean>
 
 </beans>

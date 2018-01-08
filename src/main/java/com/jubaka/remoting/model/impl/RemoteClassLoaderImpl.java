@@ -1,8 +1,10 @@
 package com.jubaka.remoting.model.impl;
 
+import com.jubaka.remoting.classLoader.util.lang.DynamicClassLoader;
 import com.jubaka.remoting.config.SpringBootStarter;
 import com.jubaka.remoting.model.RemoteClassLoader;
 import com.jubaka.remoting.model.dto.ClassConteiner;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,6 +25,10 @@ public class RemoteClassLoaderImpl implements RemoteClassLoader {
     public boolean loadClass(ClassConteiner cContainer) {
         try {
             saveClass(cContainer);
+            DynamicClassLoader dcLoader = new DynamicClassLoader(SpringBootStarter.getClassPath());
+            Class<?> clazz =  dcLoader.loadClass(cContainer.getClassName());
+            Class.forName(cContainer.getClassName(),true,dcLoader);
+            System.out.println(clazz.getName());
         } catch (Exception e) {
             e.printStackTrace();
             return false;
