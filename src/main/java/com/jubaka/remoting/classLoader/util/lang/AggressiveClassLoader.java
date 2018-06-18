@@ -1,5 +1,6 @@
 package com.jubaka.remoting.classLoader.util.lang;
 
+import java.rmi.server.RMIClassLoaderSpi;
 import java.util.HashSet;
 import java.util.Set;
 

@@ -9,4 +9,6 @@ import com.jubaka.remoting.model.dto.ClassConteiner;
 public interface RemoteClassLoader {
 
     public boolean loadClass(ClassConteiner cContainer);
+    public Class getClass(String name);
+    public byte[] getByteCode(String name);
 }

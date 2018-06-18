@@ -13,22 +13,38 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
+import java.util.HashMap;
 
 /**
  * Created by root on 05.01.18.
  */
 public class RemoteClassLoaderImpl implements RemoteClassLoader {
 
+    private HashMap<String, Class> loadedClasses = new HashMap<>();
+    private HashMap<String, byte[]> loadedBytecode = new HashMap<>();
+    DynamicClassLoader dcLoader = new DynamicClassLoader(SpringBootStarter.getClassPath());
 
+    public Class getClass(String name) {
+        return loadedClasses.get(name);
+    }
+
+    @Override
+    public byte[] getByteCode(String name) {
+        return loadedBytecode.get(name);
+    }
 
     @Override
     public boolean loadClass(ClassConteiner cContainer) {
         try {
             saveClass(cContainer);
-            DynamicClassLoader dcLoader = new DynamicClassLoader(SpringBootStarter.getClassPath());
+
             Class<?> clazz =  dcLoader.loadClass(cContainer.getClassName());
-            Class.forName(cContainer.getClassName(),true,dcLoader);
-            System.out.println(clazz.getName());
+            loadedClasses.put(clazz.getName(),clazz);
+            loadedBytecode.put(clazz.getName(),cContainer.getBytecode());
+           // Object rmoteObject = clazz.newInstance();
+           // Class.forName(cContainer.getClassName(),true,dcLoader);
+           // System.out.println(clazz.getName());
+           // ClassLoader.getSystemClassLoader().loadClass(clazz.getName());
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -43,6 +59,7 @@ public class RemoteClassLoaderImpl implements RemoteClassLoader {
 
         //Files.createDirectories(Paths.get(classPwd), null);
         new File(classPwd).mkdirs();
+        Files.deleteIfExists(Paths.get(className));
         Files.write(Paths.get(className),cc.getBytecode(), StandardOpenOption.CREATE_NEW);
         return true;
     }

@@ -10,6 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.rmi.server.RMIClassLoaderSpi;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.jar.JarFile;
@@ -17,6 +18,22 @@ import java.util.zip.ZipEntry;
 
 public class DynamicClassLoader extends AggressiveClassLoader {
 	LinkedList<F1<String, byte[]>> loaders = new LinkedList<>();
+
+
+	public DynamicClassLoader() {
+		String[] paths = new String[1];
+		paths[0] = "/home/jubaka/dev/spring-rmi/classPath/";
+		//paths[1] = "/home/jubaka/dev/remoteExecutorSerive-RMI/server/spring-rmi-remoteExec/target/classes";
+		for (String path : paths) {
+			File file = new File(path);
+
+			F1<String, byte[]> loader = loader(file);
+			if (loader == null) {
+				throw new RuntimeException("Path not exists " + path);
+			}
+			loaders.add(loader);
+		}
+	}
 
 	public DynamicClassLoader(String... paths) {
 		for (String path : paths) {
@@ -106,5 +123,15 @@ public class DynamicClassLoader extends AggressiveClassLoader {
 			}
 		}
 		return null;
+	}
+
+	public Class<?> loadClass(String name) throws ClassNotFoundException {
+
+		byte[] newClassData = loadNewClass(name);
+		if (newClassData != null) {
+			return loadClass(newClassData, name);
+		} else {
+			return super.loadClass(name);
+		}
 	}
 }

@@ -1,7 +1,11 @@
 package com.jubaka.remoting.model.impl;
 
+import com.jubaka.remoting.model.RemoteClassLoader;
 import com.jubaka.remoting.model.RemoteExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.security.PrivilegedAction;
 import java.util.Collection;
@@ -13,6 +17,10 @@ import java.util.concurrent.*;
  */
 
 public class RemoteExecutorImpl implements ExecutorService {
+
+    @Autowired
+    private RemoteClassLoader remoteClassLoader;
+
     private ExecutorService executor = Executors.newCachedThreadPool();
 
     /**
@@ -276,7 +284,20 @@ public class RemoteExecutorImpl implements ExecutorService {
      * @throws NullPointerException       if command is null
      */
     public void execute(Runnable command) {
+        Class remoteClass = remoteClassLoader.getClass(command.getClass().getName());
+        byte[] newCOde = remoteClassLoader.getByteCode(command.getClass().getName());
+        command.getClass().getClassLoader().clearAssertionStatus();
+        System.out.println(command.getClass().getClassLoader());
+        System.out.println(remoteClass.getClassLoader());
+       // command = (Runnable) remoteClass.cast(command);
+        try {
+            Runnable testNewRun = (Runnable) remoteClass.newInstance();
+          //  executor.execute(testNewRun);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        executor.execute(command);
     }
 
 

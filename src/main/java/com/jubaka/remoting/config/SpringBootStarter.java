@@ -23,9 +23,17 @@ public class SpringBootStarter {
 
     public static void main(String[] args) {
         //System.setSecurityManager(new RMISecurityManager());
+
         System.setSecurityManager(new SecurityManager());
+
+//        System.getSecurityManager().checkPropertyAccess("java.rmi.server.useCodebaseOnly");
         System.setProperty("java.rmi.server.useCodebaseOnly","false");
         System.setProperty("java.rmi.server.codebase","file:/home/jubaka/dev/spring-rmi/classPath/");
+       // System.setProperty("java.rmi.server.RMIClassLoaderSpi","com.jubaka.remoting.classLoader.util.lang.AggressiveClassLoader");
+        System.setProperty("java.rmi.server.RMIClassLoaderSpi","com.jubaka.remoting.classLoader.util.lang.CustomRmiClassLoader");
+        System.out.println(System.getProperty("java.class.path"));
+       // System.getProperties().list(System.out);
+
         SpringApplication.run(SpringBootStarter.class,args);
 
     }
