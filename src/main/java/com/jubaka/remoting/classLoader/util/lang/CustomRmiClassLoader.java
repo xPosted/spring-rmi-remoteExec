@@ -1,11 +1,13 @@
 package com.jubaka.remoting.classLoader.util.lang;
 
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.rmi.server.RMIClassLoader;
 import java.rmi.server.RMIClassLoaderSpi;
 
 public class CustomRmiClassLoader extends RMIClassLoaderSpi {
-    private DynamicClassLoader dynamicLoader = new DynamicClassLoader("/home/jubaka/dev/spring-rmi/classPath/");
+   // private DynamicClassLoader dynamicLoader = new DynamicClassLoader("/home/jubaka/dev/spring-rmi/classPath/");
     private RMIClassLoader loader;
 
     @Override
@@ -13,18 +15,11 @@ public class CustomRmiClassLoader extends RMIClassLoaderSpi {
       //  return sun.rmi.server.LoaderHandler.loadClass(
       //          codebase, name, defaultLoader);
         Class clazz = null;
-        if (name.startsWith("com.jubaka.remoting.client"))
+       // if (name.startsWith("com.jubaka.remoting.client"))
+        if (isInDynamicClassPath(name)&&(!name.contains("ClassConteiner")))
         {
-           // DynamicClassLoader dynamicLoader = new DynamicClassLoader("/home/jubaka/dev/spring-rmi/classPath/");
+            DynamicClassLoader dynamicLoader = new DynamicClassLoader("/home/jubaka/dev/spring-rmi/classPath/");
             clazz = dynamicLoader.loadClass(name);
-            try {
-                Runnable r = (Runnable) clazz.newInstance();
-                Thread th = new Thread(r);
-          //      th.start();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
         }
         else
             clazz = sun.rmi.server.LoaderHandler.loadClass(
@@ -35,6 +30,12 @@ public class CustomRmiClassLoader extends RMIClassLoaderSpi {
         //    System.out.println("Class "+ name + " loaded");
         }
         return clazz;
+    }
+
+    public boolean isInDynamicClassPath(String name) {
+        String fullName = "/home/jubaka/dev/spring-rmi/classPath/"+name.replace(".","/")+".class";
+        if (Files.exists(Paths.get(fullName))) return true;
+        return false;
     }
 
     @Override

@@ -124,7 +124,7 @@ public class DynamicClassLoader extends AggressiveClassLoader {
 		}
 		return null;
 	}
-
+/*
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
 
 		byte[] newClassData = loadNewClass(name);
@@ -134,4 +134,5 @@ public class DynamicClassLoader extends AggressiveClassLoader {
 			return super.loadClass(name);
 		}
 	}
+	*/
 }
