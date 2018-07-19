@@ -18,7 +18,7 @@
         <property name="serviceName" value="RemoteExecutor"></property>
         <property name="service" ref="remoteExecutor"></property>
         <property name="serviceInterface" value="java.util.concurrent.ExecutorService"></property>
-        <property name="registryPort" value="1199"></property>
+        <property name="registryPort" value="1102"></property>
       <!--  <property name="clientSocketFactory" ref="xorClientSocketFactory"></property>
         <property name="serverSocketFactory" ref="xorServerSocketFactory"></property>  -->
 
@@ -28,7 +28,7 @@
         <property name="serviceName" value="RemoteClassLoader"></property>
         <property name="service" ref="classLoader"></property>
         <property name="serviceInterface" value="com.jubaka.remoting.model.RemoteClassLoader"></property>
-        <property name="registryPort" value="1099"></property>
+        <property name="registryPort" value="1101"></property>
        <!-- <property name="clientSocketFactory" ref="xorClientSocketFactory"></property>
         <property name="serverSocketFactory" ref="xorServerSocketFactory"></property> -->
     </bean>
@@ -37,7 +37,7 @@
         <property name="serviceName" value="RemoteFutureController"></property>
         <property name="service" ref="futureController"></property>
         <property name="serviceInterface" value="com.jubaka.remoting.model.RemoteFutureController"></property>
-        <property name="registryPort" value="1299"></property>
+        <property name="registryPort" value="1103"></property>
         <property name="clientSocketFactory" ref="xorClientSocketFactory"></property>
         <property name="serverSocketFactory" ref="xorServerSocketFactory"></property>
 

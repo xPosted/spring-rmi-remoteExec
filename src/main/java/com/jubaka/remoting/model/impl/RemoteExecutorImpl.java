@@ -3,6 +3,7 @@ package com.jubaka.remoting.model.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.*;
@@ -36,7 +37,7 @@ public class RemoteExecutorImpl implements ExecutorService {
      *                           denies access.
      */
     public void shutdown() {
-
+        executor.shutdown();
     }
 
     /**
@@ -63,8 +64,8 @@ public class RemoteExecutorImpl implements ExecutorService {
      *                           denies access.
      */
     public List<Runnable> shutdownNow() {
-        System.out.println("shutdown");
-        return null;
+
+        return executor.shutdownNow();
     }
 
     /**
@@ -73,7 +74,7 @@ public class RemoteExecutorImpl implements ExecutorService {
      * @return {@code true} if this executor has been shut down
      */
     public boolean isShutdown() {
-        return false;
+        return executor.isShutdown();
     }
 
     /**
@@ -84,7 +85,7 @@ public class RemoteExecutorImpl implements ExecutorService {
      * @return {@code true} if all tasks have completed following shut down
      */
     public boolean isTerminated() {
-        return false;
+        return executor.isTerminated();
     }
 
     /**
@@ -99,7 +100,7 @@ public class RemoteExecutorImpl implements ExecutorService {
      * @throws InterruptedException if interrupted while waiting
      */
     public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-        return false;
+        return executor.awaitTermination(timeout,unit);
     }
 
     /**
@@ -126,7 +127,7 @@ public class RemoteExecutorImpl implements ExecutorService {
      */
     public <T> Future<T> submit(Callable<T> task) {
 
-        System.out.println("submit callable");
+       // System.out.println("submit callable");
         Future<?> f = executor.submit(task);
         FutureRemote<?> fr = new FutureRemote<>(futureController.addFuture(f));
         return fr;
@@ -162,7 +163,7 @@ public class RemoteExecutorImpl implements ExecutorService {
      * @throws NullPointerException       if the task is null
      */
     public Future<?> submit(Runnable task) {
-        System.out.println("submit runnable");
+
         Future<?> f = executor.submit(task);
         FutureRemote<?> fr = new FutureRemote<>(futureController.addFuture(f));
         return fr;
@@ -189,7 +190,10 @@ public class RemoteExecutorImpl implements ExecutorService {
      *                                    scheduled for execution
      */
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
-        return null;
+        List<Future<T>> futures = executor.invokeAll(tasks);
+        List<Future<T>> futureRemotes = putListOfFutures(futures);
+
+        return futureRemotes;
     }
 
     /**
@@ -220,7 +224,11 @@ public class RemoteExecutorImpl implements ExecutorService {
      *                                    for execution
      */
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
-        return null;
+
+        List<Future<T>> futures = executor.invokeAll(tasks,timeout,unit);
+        List<Future<T>> futureRemotes = putListOfFutures(futures);
+
+        return futureRemotes;
     }
 
     /**
@@ -242,7 +250,9 @@ public class RemoteExecutorImpl implements ExecutorService {
      *                                    for execution
      */
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
-        return null;
+
+        T result = executor.invokeAny(tasks);
+        return result;
     }
 
     /**
@@ -268,7 +278,8 @@ public class RemoteExecutorImpl implements ExecutorService {
      *                                    for execution
      */
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        return null;
+        T result = executor.invokeAny(tasks,timeout,unit);
+        return result;
     }
 
     /**
@@ -298,8 +309,12 @@ public class RemoteExecutorImpl implements ExecutorService {
         executor.execute(command);
     }
 
-
-    public void test() {
-        System.out.println("test");
+    private <T> List<Future<T>> putListOfFutures(List<Future<T>> futures) {
+        List<Future<T>> futureRemotes = new ArrayList<>();
+        for (Future f : futures) {
+            FutureRemote<T> fRemote = new FutureRemote<>(futureController.addFuture(f));
+            futureRemotes.add(fRemote);
+        }
+         return futureRemotes;
     }
 }

@@ -2,6 +2,7 @@ package com.jubaka.remoting.model.impl;
 
 import com.jubaka.remoting.model.RemoteFutureController;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -38,12 +39,12 @@ public class RemoteFutureControllerImpl implements RemoteFutureController {
         return futureContainer.get(id).isDone();
     }
 
-    @Override
+    //@Override
     public boolean isCancelled(long id) {
         return futureContainer.get(id).isCancelled();
     }
 
-    @Override
+    //@Override
     public boolean cancel(long id, boolean mayInterruptIfRunning) {
         return futureContainer.get(id).cancel(mayInterruptIfRunning);
     }
